@@ -2,8 +2,14 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "app_bucket" {
+data "aws_s3_bucket" "app_bucket" {
   bucket = var.bucket_name
+}
+
+resource "aws_s3_object" "app_war" {
+  bucket = data.aws_s3_bucket.app_bucket.bucket
+  key    = "app.war"
+  source = "../../app.war"  # Path to app.war in repo root
 }
 
 resource "aws_elastic_beanstalk_application" "app" {
@@ -33,6 +39,6 @@ resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "${var.app_name}-v${formatdate("YYYYMMDDHHmmss", timestamp())}"
   application = aws_elastic_beanstalk_application.app.name
   description = "Application version created by Terraform"
-  bucket      = aws_s3_bucket.app_bucket.bucket
-  key         = "app.war"
+  bucket      = data.aws_s3_bucket.app_bucket.bucket
+  key         = aws_s3_object.app_war.key
 }

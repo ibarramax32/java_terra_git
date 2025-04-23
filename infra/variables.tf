@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "bucket_name" {
   description = "S3 bucket name for app artifacts"
   type        = string
-  default     = "my-elasticbeanstalk-bucket"
+  default     = "my-elasticbeanstalk-bucket123"
 }
 
 variable "app_name" {
